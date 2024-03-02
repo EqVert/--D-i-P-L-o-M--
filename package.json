@@ -1,0 +1,24 @@
+{
+	"workspaces": [
+		"client",
+		"server"
+	],
+	"type": "module",
+	"scripts": {
+		"dev": "concurrently -r \"npm run dev --workspace=client\" \"npm run dev --workspace=server\"",
+		"lint": "eslint client server --ext js,jsx --max-warnings 0",
+		"build": "npm run build --workspace=client && npm run build --workspace=server"
+	},
+	"devDependencies": {
+		"@tailwindcss/forms": "^0.5.7",
+		"@tailwindcss/typography": "^0.5.10",
+		"concurrently": "^8.2.1",
+		"cors": "^2.8.5",
+		"eslint": "^8.50.0",
+		"eslint-plugin-react": "^7.33.2",
+		"eslint-plugin-react-hooks": "^4.6.0"
+	},
+	"dependencies": {
+		"@react-keycloak/web": "^3.4.0"
+	}
+}

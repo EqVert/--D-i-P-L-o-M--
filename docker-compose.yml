@@ -1,0 +1,18 @@
+services:
+  mongodb:
+    image: mongo:7.0.3
+    ports:
+      - '27017:27017'
+
+  keycloak:
+    image: keycloak/keycloak:22.0.5
+    volumes:
+      - ./keycloak-config:/opt/keycloak/data/import
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev --import-realm
+    ports:
+      - '8080:8080'
+# //docker compose up -d
