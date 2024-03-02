@@ -32,29 +32,19 @@ export default function Cats() {
 	}
 
 	const cats = data?.map((cat) => (
-		<div
-			key={cat._id}
-			className='flex flex-col shrink p-1 m-[1px] border border-slate-400'
-		>
+		<div key={cat._id}>
 			<div className=''>
 				{cat.name} {cat.colour}
 			</div>
 
-			<button
-				className='w-36 mx-auto'
-				onClick={() => dispatch(catSelected(cat))}
-			>
-				Обрати кота
-			</button>
-			<button className='w-36 mx-auto' onClick={() => handleDelete(cat._id)}>
-				Удалить кота
-			</button>
+			<button onClick={() => dispatch(catSelected(cat))}>Обрати кота</button>
+			<button onClick={() => handleDelete(cat._id)}>Удалить кота</button>
 		</div>
 	))
 
 	return (
 		<>
-			<form className='p-2' onSubmit={(e) => submit(e)}>
+			<form onSubmit={(e) => submit(e)}>
 				<h2>Зробити нового кіта:</h2>
 				<input
 					onChange={(event) => setName(event.target.value)}

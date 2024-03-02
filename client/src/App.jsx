@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import { authService } from './service/authService.js'
 import Header from './components/navigarion/Header.jsx'
+import { ThemeProvider } from './components/ThemeSwitcher/ThemeContext.jsx'
 
 export default function App() {
 	const isLoggedIn = authService.isLoggedIn()
@@ -11,10 +12,12 @@ export default function App() {
 
 	return (
 		<>
-			<Header />
-			<div className='pt-28'>
-				<Outlet />
-			</div>
+			<ThemeProvider>
+				<Header />
+				<div className='pt-28'>
+					<Outlet />
+				</div>
+			</ThemeProvider>
 		</>
 	)
 }
