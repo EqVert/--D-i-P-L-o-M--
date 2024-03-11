@@ -34,7 +34,7 @@ export default function Cats() {
 	const cats = data?.map((cat) => (
 		<div key={cat._id}>
 			<div className=''>
-				{cat.name} {cat.colour}
+				{cat.name} <br /> {cat.colour}
 			</div>
 
 			<button onClick={() => dispatch(catSelected(cat))}>Обрати кота</button>
@@ -44,7 +44,7 @@ export default function Cats() {
 
 	return (
 		<>
-			<form onSubmit={(e) => submit(e)}>
+			<form className='p-2' onSubmit={(e) => submit(e)}>
 				<h2>Зробити нового кіта:</h2>
 				<input
 					onChange={(event) => setName(event.target.value)}
@@ -62,7 +62,7 @@ export default function Cats() {
 				/>
 				<button type='submit'>Створити</button>
 			</form>
-			<div className='flex flex-row'>{cats}</div>
+			<div className='flex flex-wrap justify-evenly'>{cats}</div>
 		</>
 	)
 }

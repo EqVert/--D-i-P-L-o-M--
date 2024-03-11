@@ -35,15 +35,15 @@ module.exports = {
     plugin(({ addComponents, theme, addUtilities }) => {
       addComponents({
         '.btn': {
-          backgroundColor: theme('colors.slate.500'),
-          padding: '5px 0',
+          padding: '5px 2px',
           display: 'block',
           width: '100%',
           fontSize: 18,
           fontWeight: 'bold',
-
+          backgroundColor: theme('colors.slate.600'),
+          color: 'rgb(220,220,220)',
           '&:hover': {
-            backgroundColor: theme('colors.slate.600'),
+            backgroundColor: theme('colors.slate.800'),
           },
         },
       }),

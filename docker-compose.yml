@@ -15,4 +15,4 @@ services:
       - start-dev --import-realm
     ports:
       - '8080:8080'
-# //docker compose up -d
+# docker compose up -d

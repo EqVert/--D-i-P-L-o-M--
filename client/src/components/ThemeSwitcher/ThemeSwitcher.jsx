@@ -21,10 +21,7 @@ const ThemeSwitcher = () => {
 	}
 
 	return (
-		<button
-			onClick={toggleTheme}
-			className='w-14 content-center p-2 bg-slate-400 rounded-md'
-		>
+		<button onClick={toggleTheme} className='w-10 ml-1'>
 			{getIcon()}
 		</button>
 	)
