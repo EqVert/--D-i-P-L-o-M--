@@ -34,6 +34,7 @@ export default function Cats() {
 	const cats = data?.map((cat) => (
 		<div key={cat._id}>
 			<div className=''>
+				{cat._id} <br />
 				{cat.name} <br /> {cat.colour}
 			</div>
 

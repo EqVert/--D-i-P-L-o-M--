@@ -8,6 +8,7 @@ services:
     image: keycloak/keycloak:22.0.5
     volumes:
       - ./keycloak-config:/opt/keycloak/data/import
+      - ./keycloak-date:/opt/keycloak/data/h2 # место хранения БД
     environment:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
