@@ -32,6 +32,7 @@ module.exports = {
 	},
 	plugins: [
 		require('@tailwindcss/typography'),
+		require('@tailwindcss/forms'),
 		plugin(({ addComponents, theme, addUtilities }) => {
 			addComponents({
 				'.btn': {

@@ -9,6 +9,7 @@ import './styles/index.css'
 
 const App = lazy(() => import('./App.jsx'))
 const Cats = lazy(() => import('./components/cats/Cats.jsx'))
+const Tickets = lazy(() => import('./components/tickets/Tickets.jsx'))
 
 // Определяем маршрут для приложений, корневые и дочерние элементы в адресной строке
 const router = createBrowserRouter([
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
 			{
 				path: 'cats',
 				element: <Cats />,
+			},
+			{
+				path: 'tikets',
+				element: <Tickets />,
 			},
 		],
 	},
