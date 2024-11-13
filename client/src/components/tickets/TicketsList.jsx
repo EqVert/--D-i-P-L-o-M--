@@ -73,20 +73,20 @@ export default function TicketsList() {
 							<td className='border'>{formatDate(ticket.startDate)}</td>
 							<td className='border'>{ticket.comment}</td>
 							<td className='border'>
-								<div className='flex space-x-2'>
+								<div className='flex space-x-10 justify-center items-center'>
 									<button
 										onClick={() => dispatch(ticketSelected(ticket))}
-										className='btn m-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+										className='w-7 rounded-full text-green-600 border border-green-600 bg-transparent'
 										title='Выбрать задачу'
 									>
-										<FaCheck />
+										<FaCheck className='m-auto' />
 									</button>
 									<button
 										onClick={() => handleDelete(ticket._id)}
-										className='btn m-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+										className='w-7 rounded-full text-red-600 border border-red-600 bg-transparent'
 										title='Удалить задачу'
 									>
-										<FaTrash />
+										<FaTrash className='m-auto' />
 									</button>
 								</div>
 							</td>

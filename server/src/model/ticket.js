@@ -11,6 +11,7 @@ const ticketSchema = new Schema(
 		startDate: { type: Date, required: true },
 		comment: { type: String, required: false },
 		number: { type: Number, unique: true, required: true, default: 0 },
+		createdBy: { type: String, required: true }, // Добавлено поле createdBy
 	},
 	{
 		timestamps: true, // Добавляет поля createdAt и updatedAt

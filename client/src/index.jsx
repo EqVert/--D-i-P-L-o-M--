@@ -41,7 +41,8 @@ root.render(
     (<div>Loading...</div>) во время загрузки ленивых компонентов. */}
 			<Suspense fallback={<div>Loading...</div>}>
 				{/* RouterProvider используется для включения маршрутизации в приложении
-      с помощью созданного объекта маршрутизатора. */}
+      с помощью созданного объекта маршрутизатора.
+			ПУБЛИЧНА ЧАСТИНА */}
 				<RouterProvider router={router} />
 			</Suspense>
 		</Provider>

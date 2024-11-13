@@ -1,20 +1,22 @@
 import express from 'express'
 
-import keycloak from '../auth/keycloak.js'
+import { keycloak, kcAdminClient } from '../auth/keycloak.js'
 import { Ticket } from '../model/ticket.js'
 
 const router = express.Router()
 router.use(keycloak.protect()) // Всё что ниже будет требовать авторизацию
 
 router.post('/', async (req, res) => {
-	let ticket = new Ticket(req.body)
+	const userId = req.kauth.grant.access_token.content.sub
+	let ticket = new Ticket({ ...req.body, createdBy: userId })
 	let result = await ticket.save()
 
 	res.send(result).status(204)
 })
 
 router.get('/', async (req, res) => {
-	let results = await Ticket.find()
+	const userId = req.kauth.grant.access_token.content.sub
+	let results = await Ticket.find({ createdBy: userId })
 
 	res.send(results).status(200)
 })

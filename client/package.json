@@ -12,7 +12,7 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.2",
     "react-router-dom": "^6.15.0",
-    "tcomad-oidc": "^4.2.3"
+    "auth-oidc": "^0.1.3"
   },
   "devDependencies": {
     "@babel/core": "^7.22.1",
