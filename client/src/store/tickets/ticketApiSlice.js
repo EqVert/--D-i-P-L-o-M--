@@ -34,6 +34,14 @@ export const ticketApiSlice = createApi({
 			}),
 			invalidatesTags: ['Tickets'],
 		}),
+		updateTicket: builder.mutation({
+			query: ({ id, ticket }) => ({
+				url: `/tickets/${id}`,
+				method: 'PUT',
+				body: ticket,
+			}),
+			invalidatesTags: ['Tickets'],
+		}),
 	}),
 })
 
@@ -41,4 +49,5 @@ export const {
 	useFetchTicketsQuery,
 	useAddTicketMutation,
 	useDeleteTicketMutation,
+	useUpdateTicketMutation, // Добавим новый хук
 } = ticketApiSlice

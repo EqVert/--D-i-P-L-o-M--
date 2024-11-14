@@ -4,15 +4,35 @@ import {
 	useDeleteTicketMutation,
 } from '../../store/tickets/ticketApiSlice.js'
 import { ticketSelected } from '../../store/tickets/ticketSlice.js'
-import { FaTrash, FaCheck } from 'react-icons/fa'
+import { FaTrash, FaCheck, FaPen } from 'react-icons/fa' // Добавим иконку карандаша
+import { useState } from 'react'
+import TicketEdit from './TicketEdit'
 
-export default function TicketsList() {
+export default function TicketsList({ onEdit }) {
 	const dispatch = useDispatch()
 	const { data } = useFetchTicketsQuery()
 	const [deleteTicket] = useDeleteTicketMutation()
+	const [editingTicket, setEditingTicket] = useState(null)
 
 	const handleDelete = (ticketId) => {
 		deleteTicket(ticketId)
+	}
+
+	// const handleEdit = (ticket) => {
+	// 	setEditingTicket(ticket)
+	// }
+
+	const handleEditClick = (ticket) => {
+		onEdit(ticket)
+	}
+
+	if (editingTicket) {
+		return (
+			<TicketEdit
+				ticket={editingTicket}
+				onClose={() => setEditingTicket(null)}
+			/>
+		)
 	}
 
 	const formatDate = (dateString) => {
@@ -82,12 +102,25 @@ export default function TicketsList() {
 										<FaCheck className='m-auto' />
 									</button>
 									<button
+										onClick={() => handleEditClick(ticket)}
+										className='w-7 rounded-full text-blue-600 border border-blue-600 bg-transparent'
+										title='Редактировать задачу'
+									>
+										<FaPen className='m-auto' />
+									</button>
+									<button
 										onClick={() => handleDelete(ticket._id)}
 										className='w-7 rounded-full text-red-600 border border-red-600 bg-transparent'
 										title='Удалить задачу'
 									>
 										<FaTrash className='m-auto' />
 									</button>
+									{/* <button
+										onClick={() => handleEditClick(ticket)}
+										className='btn'
+									>
+										Редактировать
+									</button> */}
 								</div>
 							</td>
 						</tr>

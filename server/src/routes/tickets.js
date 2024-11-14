@@ -34,4 +34,28 @@ router.delete('/:id', async (req, res) => {
 	}
 })
 
+router.put('/:id', async (req, res) => {
+	try {
+		const userId = req.kauth.grant.access_token.content.sub
+		const ticket = await Ticket.findOne({
+			_id: req.params.id,
+			createdBy: userId,
+		})
+
+		if (!ticket) {
+			return res.status(404).send({ message: 'Ticket not found' })
+		}
+
+		const updatedTicket = await Ticket.findByIdAndUpdate(
+			req.params.id,
+			req.body,
+			{ new: true }
+		)
+
+		res.json(updatedTicket)
+	} catch (error) {
+		res.status(500).send({ message: 'Error updating ticket' })
+	}
+})
+
 export default router
