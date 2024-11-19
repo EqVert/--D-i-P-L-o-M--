@@ -29,7 +29,6 @@ router.post('/', async (req, res) => {
 // Получение списка пользователей
 router.get('/', async (req, res) => {
 	try {
-		// Получаем всех пользователей через Keycloak Admin Client
 		const users = await kcAdminClient.users.find()
 
 		// Отфильтровываем и форматируем данные пользователей
@@ -44,6 +43,7 @@ router.get('/', async (req, res) => {
 					id: user.id,
 					username: user.username,
 					email: user.email,
+					attributes: user.attributes,
 					roles: userRoles.map((role) => role.name),
 				}
 			})
@@ -82,6 +82,9 @@ router.put('/:id', async (req, res) => {
 				email: userData.email,
 				emailVerified: true,
 				enabled: true,
+				attributes: {
+					department: [userData.department], // Добавляем отдел как атрибут
+				},
 			}
 		)
 
@@ -93,6 +96,7 @@ router.put('/:id', async (req, res) => {
 			id: updatedUser.id,
 			username: updatedUser.username,
 			email: updatedUser.email,
+			attributes: updatedUser.attributes,
 			roles: userRoles.map((role) => role.name),
 		}
 

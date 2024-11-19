@@ -13,7 +13,10 @@ export default function UsersList() {
 	if (error) return <div>Ошибка: {error.message}</div>
 
 	const handleEdit = (user) => {
-		setEditingUser(user)
+		setEditingUser({
+			...user,
+			department: user.attributes?.department?.[0] || '', // Добавляем отдел из атрибутов
+		})
 	}
 
 	const handleSave = async (id, data) => {
@@ -29,6 +32,7 @@ export default function UsersList() {
 				data: {
 					username: data.username,
 					email: data.email,
+					department: data.department, // Добавляем отдел в отправляемые данные
 				},
 			}).unwrap()
 
@@ -52,6 +56,7 @@ export default function UsersList() {
 					<tr>
 						<th className='py-2'>Имя пользователя</th>
 						<th className='py-2'>Email</th>
+						<th className='py-2'>Отдел</th>
 						<th className='py-2'>Роли</th>
 						<th className='py-2'>Действия</th>
 					</tr>
@@ -87,6 +92,20 @@ export default function UsersList() {
 											className='w-full p-1 border rounded dark:bg-slate-700'
 										/>
 									</td>
+									<td className='py-2 px-4'>
+										<input
+											type='text'
+											value={editingUser.department || ''}
+											onChange={(e) =>
+												setEditingUser({
+													...editingUser,
+													department: e.target.value,
+												})
+											}
+											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите отдел'
+										/>
+									</td>
 									<td className='py-2 px-4'>{user.roles?.join(', ')}</td>
 									<td className='py-2 px-4'>
 										<button
@@ -107,6 +126,9 @@ export default function UsersList() {
 								<>
 									<td className='py-2 px-4'>{user.username}</td>
 									<td className='py-2 px-4'>{user.email}</td>
+									<td className='py-2 px-4'>
+										{user.attributes?.department?.[0] || '-'}
+									</td>
 									<td className='py-2 px-4'>{user.roles?.join(', ')}</td>
 									<td className='py-2 px-4'>
 										<button
