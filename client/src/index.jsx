@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { Provider } from 'react-redux'
 import { store } from './store/store.js'
-
+import UsersList from './components/Users/UsersList'
 import './styles/index.css'
 
 const App = lazy(() => import('./App.jsx'))
@@ -22,8 +22,12 @@ const router = createBrowserRouter([
 				element: <Cats />,
 			},
 			{
-				path: 'tikets',
+				path: 'tickets',
 				element: <Tickets />,
+			},
+			{
+				path: 'users',
+				element: <UsersList />,
 			},
 		],
 	},

@@ -26,7 +26,17 @@ export default function Header() {
 				<NavLink to='/cats' className='mr-10'>
 					Коти
 				</NavLink>
-				<NavLink to='/tikets'>Заявки</NavLink>
+				<NavLink to='/tickets'>Заявки</NavLink>
+				<NavLink
+					to='/users'
+					className={({ isActive }) =>
+						`px-4 py-2 rounded-lg ${
+							isActive ? 'bg-slate-100 dark:bg-slate-700' : ''
+						}`
+					}
+				>
+					Пользователи
+				</NavLink>
 				{cat && (
 					<div>
 						Обрано кота: {cat.name} {cat.colour}
