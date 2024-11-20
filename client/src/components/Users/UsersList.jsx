@@ -1,8 +1,17 @@
 import { useState } from 'react'
+import { FaPen, FaCheck, FaTimes } from 'react-icons/fa'
 import {
 	useGetUsersQuery,
 	useUpdateUserMutation,
 } from '../../store/users/userApiSlice.js'
+
+const style = `
+	.resizable {
+		resize: horizontal;
+		overflow: auto;
+		min-width: 50px;
+	}
+`
 
 export default function UsersList() {
 	const { data: users, isLoading, error } = useGetUsersQuery()
@@ -15,24 +24,31 @@ export default function UsersList() {
 	const handleEdit = (user) => {
 		setEditingUser({
 			...user,
-			department: user.attributes?.department?.[0] || '', // Добавляем отдел из атрибутов
+			firstName: user.firstName || '',
+			lastName: user.lastName || '',
+			department: user.attributes?.department?.[0] || '',
+			middleName: user.attributes?.middleName?.[0] || '',
+			position: user.attributes?.position?.[0] || '',
+			phone: user.attributes?.phone?.[0] || '',
+			computerInventoryNumber:
+				user.attributes?.computerInventoryNumber?.[0] || '',
 		})
 	}
 
 	const handleSave = async (id, data) => {
 		try {
-			// Проверяем данные перед отправкой
-			if (!data.username || !data.email) {
-				console.error('Missing required fields')
-				return
-			}
-
 			const result = await updateUser({
 				id,
 				data: {
 					username: data.username,
 					email: data.email,
-					department: data.department, // Добавляем отдел в отправляемые данные
+					firstName: data.firstName,
+					lastName: data.lastName,
+					department: data.department,
+					middleName: data.middleName,
+					position: data.position,
+					phone: data.phone,
+					computerInventoryNumber: data.computerInventoryNumber,
 				},
 			}).unwrap()
 
@@ -51,14 +67,21 @@ export default function UsersList() {
 	return (
 		<div className='p-4'>
 			<h2 className='text-2xl mb-4'>Зарегистрированные пользователи</h2>
+			<style>{style}</style>
 			<table className='min-w-full bg-white dark:bg-slate-800'>
 				<thead>
 					<tr>
-						<th className='py-2'>Имя пользователя</th>
-						<th className='py-2'>Email</th>
-						<th className='py-2'>Отдел</th>
-						<th className='py-2'>Роли</th>
-						<th className='py-2'>Действия</th>
+						<th className='py-2 resizable'>Ник</th>
+						<th className='py-2 resizable'>Фамилия</th>
+						<th className='py-2 resizable'>Имя</th>
+						<th className='py-2 resizable'>Отчество</th>
+						<th className='py-2 resizable'>Email</th>
+						<th className='py-2 resizable'>Отдел</th>
+						<th className='py-2 resizable'>Роли</th>
+						<th className='py-2 resizable'>Должность</th>
+						<th className='py-2 resizable'>Телефон</th>
+						<th className='py-2 resizable'>Инвентарный номер компьютера</th>
+						<th className='py-2 resizable'>Действия</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -66,17 +89,47 @@ export default function UsersList() {
 						<tr key={user.id} className='border-t'>
 							{editingUser?.id === user.id ? (
 								<>
+									<td className='py-2 px-4'>{user.username}</td>
 									<td className='py-2 px-4'>
 										<input
 											type='text'
-											value={editingUser.username}
+											value={editingUser.lastName || ''}
 											onChange={(e) =>
 												setEditingUser({
 													...editingUser,
-													username: e.target.value,
+													lastName: e.target.value,
 												})
 											}
 											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите фамилию'
+										/>
+									</td>
+									<td className='py-2 px-4'>
+										<input
+											type='text'
+											value={editingUser.firstName || ''}
+											onChange={(e) =>
+												setEditingUser({
+													...editingUser,
+													firstName: e.target.value,
+												})
+											}
+											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите имя'
+										/>
+									</td>
+									<td className='py-2 px-4'>
+										<input
+											type='text'
+											value={editingUser.middleName || ''}
+											onChange={(e) =>
+												setEditingUser({
+													...editingUser,
+													middleName: e.target.value,
+												})
+											}
+											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите отчество'
 										/>
 									</td>
 									<td className='py-2 px-4'>
@@ -108,34 +161,95 @@ export default function UsersList() {
 									</td>
 									<td className='py-2 px-4'>{user.roles?.join(', ')}</td>
 									<td className='py-2 px-4'>
-										<button
-											onClick={() => handleSave(user.id, editingUser)}
-											className='px-3 py-1 bg-green-500 text-white rounded mr-2 hover:bg-green-600'
-										>
-											Сохранить
-										</button>
-										<button
-											onClick={handleCancel}
-											className='px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600'
-										>
-											Отмена
-										</button>
+										<input
+											type='text'
+											value={editingUser.position || ''}
+											onChange={(e) =>
+												setEditingUser({
+													...editingUser,
+													position: e.target.value,
+												})
+											}
+											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите должность'
+										/>
+									</td>
+									<td className='py-2 px-4'>
+										<input
+											type='text'
+											value={editingUser.phone || ''}
+											onChange={(e) =>
+												setEditingUser({
+													...editingUser,
+													phone: e.target.value,
+												})
+											}
+											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите телефон'
+										/>
+									</td>
+									<td className='py-2 px-4'>
+										<input
+											type='text'
+											value={editingUser.computerInventoryNumber || ''}
+											onChange={(e) =>
+												setEditingUser({
+													...editingUser,
+													computerInventoryNumber: e.target.value,
+												})
+											}
+											className='w-full p-1 border rounded dark:bg-slate-700'
+											placeholder='Введите инвентарный номер компьютера'
+										/>
+									</td>
+									<td className='py-2 px-4'>
+										<div className='flex space-x-2'>
+											<button
+												onClick={() => handleSave(user.id, editingUser)}
+												className='w-7 rounded-full text-green-600 border border-green-600 bg-transparent'
+												title='Сохранить изменения'
+											>
+												<FaCheck className='m-auto' />
+											</button>
+											<button
+												onClick={handleCancel}
+												className='w-7 rounded-full text-red-600 border border-red-600 bg-transparent'
+												title='Отменить изменения'
+											>
+												<FaTimes className='m-auto' />
+											</button>
+										</div>
 									</td>
 								</>
 							) : (
 								<>
 									<td className='py-2 px-4'>{user.username}</td>
+									<td className='py-2 px-4'>{user.lastName || '-'}</td>
+									<td className='py-2 px-4'>{user.firstName || '-'}</td>
+									<td className='py-2 px-4'>
+										{user.attributes?.middleName?.[0] || '-'}
+									</td>
 									<td className='py-2 px-4'>{user.email}</td>
 									<td className='py-2 px-4'>
 										{user.attributes?.department?.[0] || '-'}
 									</td>
 									<td className='py-2 px-4'>{user.roles?.join(', ')}</td>
 									<td className='py-2 px-4'>
+										{user.attributes?.position?.[0] || '-'}
+									</td>
+									<td className='py-2 px-4'>
+										{user.attributes?.phone?.[0] || '-'}
+									</td>
+									<td className='py-2 px-4'>
+										{user.attributes?.computerInventoryNumber?.[0] || '-'}
+									</td>
+									<td className='py-2 px-4'>
 										<button
 											onClick={() => handleEdit(user)}
-											className='px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600'
+											className='w-7 rounded-full text-blue-600 border border-blue-600 bg-transparent'
+											title='Редактировать пользователя'
 										>
-											Редактировать
+											<FaPen className='m-auto' />
 										</button>
 									</td>
 								</>

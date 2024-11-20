@@ -42,6 +42,8 @@ router.get('/', async (req, res) => {
 				return {
 					id: user.id,
 					username: user.username,
+					firstName: user.firstName,
+					lastName: user.lastName,
 					email: user.email,
 					attributes: user.attributes,
 					roles: userRoles.map((role) => role.name),
@@ -74,16 +76,22 @@ router.put('/:id', async (req, res) => {
 			return res.status(404).json({ message: 'User not found' })
 		}
 
-		// Обновляем данные пользователя
+		// Обновляем данные пользователя, используя встроенные поля firstName и lastName
 		await kcAdminClient.users.update(
 			{ id },
 			{
+				firstName: userData.firstName,
+				lastName: userData.lastName,
 				username: userData.username,
 				email: userData.email,
 				emailVerified: true,
 				enabled: true,
 				attributes: {
-					department: [userData.department], // Добавляем отдел как атрибут
+					department: [userData.department],
+					middleName: [userData.middleName],
+					position: [userData.position],
+					phone: [userData.phone],
+					computerInventoryNumber: [userData.computerInventoryNumber],
 				},
 			}
 		)
@@ -95,6 +103,8 @@ router.put('/:id', async (req, res) => {
 		const formattedUser = {
 			id: updatedUser.id,
 			username: updatedUser.username,
+			firstName: updatedUser.firstName,
+			lastName: updatedUser.lastName,
 			email: updatedUser.email,
 			attributes: updatedUser.attributes,
 			roles: userRoles.map((role) => role.name),
