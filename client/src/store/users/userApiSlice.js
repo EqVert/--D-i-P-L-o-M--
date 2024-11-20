@@ -3,7 +3,7 @@ import { getBaseQuery } from '../utils.js'
 
 export const userApiSlice = createApi({
 	reducerPath: 'usersApi',
-	tagTypes: ['Users'],
+	tagTypes: ['Users', 'Roles'],
 	baseQuery: getBaseQuery(),
 	endpoints: (builder) => ({
 		getUsers: builder.query({
@@ -47,8 +47,16 @@ export const userApiSlice = createApi({
 			},
 			invalidatesTags: ['Users'],
 		}),
+		getAvailableRoles: builder.query({
+			query: () => '/users/roles',
+			providesTags: ['Roles'],
+		}),
 	}),
 })
 
-export const { useAddUserMutation, useGetUsersQuery, useUpdateUserMutation } =
-	userApiSlice
+export const {
+	useAddUserMutation,
+	useGetUsersQuery,
+	useUpdateUserMutation,
+	useGetAvailableRolesQuery,
+} = userApiSlice

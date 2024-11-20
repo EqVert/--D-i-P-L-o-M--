@@ -3,6 +3,7 @@ import { FaPen, FaCheck, FaTimes } from 'react-icons/fa'
 import {
 	useGetUsersQuery,
 	useUpdateUserMutation,
+	useGetAvailableRolesQuery,
 } from '../../store/users/userApiSlice.js'
 
 const style = `
@@ -15,6 +16,7 @@ const style = `
 
 export default function UsersList() {
 	const { data: users, isLoading, error } = useGetUsersQuery()
+	const { data: availableRoles } = useGetAvailableRolesQuery()
 	const [updateUser] = useUpdateUserMutation()
 	const [editingUser, setEditingUser] = useState(null)
 
@@ -37,7 +39,7 @@ export default function UsersList() {
 
 	const handleSave = async (id, data) => {
 		try {
-			const result = await updateUser({
+			await updateUser({
 				id,
 				data: {
 					username: data.username,
@@ -49,19 +51,33 @@ export default function UsersList() {
 					position: data.position,
 					phone: data.phone,
 					computerInventoryNumber: data.computerInventoryNumber,
+					roles: data.roles || [],
 				},
 			}).unwrap()
 
-			console.log('User updated successfully:', result)
 			setEditingUser(null)
 		} catch (error) {
 			console.error('Failed to update user:', error)
-			// Добавить уведомление пользователю об ошибке
+			// Показать сообщение об ошибке пользователю
+			alert('Ошибка при обновлении пользователя: ' + error.message)
 		}
 	}
 
 	const handleCancel = () => {
 		setEditingUser(null)
+	}
+
+	// Обработчик изменения ролей
+	const handleRoleChange = (role) => {
+		const currentRoles = editingUser.roles || []
+		const newRoles = currentRoles.includes(role)
+			? currentRoles.filter((r) => r !== role)
+			: [...currentRoles, role]
+
+		setEditingUser({
+			...editingUser,
+			roles: newRoles,
+		})
 	}
 
 	return (
@@ -159,7 +175,24 @@ export default function UsersList() {
 											placeholder='Введите отдел'
 										/>
 									</td>
-									<td className='py-2 px-4'>{user.roles?.join(', ')}</td>
+									<td className='py-2 px-4'>
+										<div className='flex flex-col gap-1'>
+											{availableRoles?.map((role) => (
+												<label
+													key={role.name}
+													className='flex items-center gap-2'
+												>
+													<input
+														type='checkbox'
+														checked={editingUser.roles?.includes(role.name)}
+														onChange={() => handleRoleChange(role.name)}
+														className='rounded border-gray-300 dark:border-gray-600'
+													/>
+													<span>{role.name}</span>
+												</label>
+											))}
+										</div>
+									</td>
 									<td className='py-2 px-4'>
 										<input
 											type='text'
