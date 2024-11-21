@@ -8,44 +8,48 @@ import ThemeSwitcher from '../ThemeSwitcher/ThemeSwitcher.jsx'
 import { useState } from 'react'
 
 export default function Header() {
-	const [roles, setRoles] = useState(
-		authService.getUserInfo('realm_access').roles
-	)
-	const [addUser] = useAddUserMutation()
-	const cat = useSelector(selectCurrentCat)
-
-	async function registerUser() {
-		await addUser()
-		await authService.tryToRefresh()
-		setRoles(authService.getUserInfo('realm_access').roles)
-	}
+	const roles = authService.getUserInfo('realm_access')?.roles || []
 
 	return (
 		<header className='flex justify-between w-full bg-slate-200 dark:bg-slate-800 fixed top-0 left-0 text-lg/6 h-25 p-1'>
 			<nav className='m-auto'>
-				<NavLink to='/cats' className='mr-10'>
-					Коти
-				</NavLink>
-				<NavLink to='/tickets'>Заявки</NavLink>
 				<NavLink
-					to='/users'
+					to='/cats'
 					className={({ isActive }) =>
-						`px-4 py-2 rounded-lg ${
-							isActive ? 'bg-slate-100 dark:bg-slate-700' : ''
+						`mr-10 ${
+							isActive
+								? 'underline decoration-blue-500 decoration-4 underline-offset-4'
+								: ''
 						}`
 					}
 				>
-					Пользователи
+					Коти
 				</NavLink>
-				{cat && (
-					<div>
-						Обрано кота: {cat.name} {cat.colour}
-					</div>
-				)}
-				{roles?.includes('ROLE_USER') ? (
-					<div>Привіт {authService.getUserInfo('preferred_username')}</div>
-				) : (
-					<button onClick={() => registerUser()}>Завершити реєстрацію</button>
+				<NavLink
+					to='/tickets'
+					className={({ isActive }) =>
+						`mr-10 ${
+							isActive
+								? 'underline decoration-blue-500 decoration-4 underline-offset-4'
+								: ''
+						}`
+					}
+				>
+					Заявки
+				</NavLink>
+				{roles.includes('ROLE_ADMIN_USER') && (
+					<NavLink
+						to='/users'
+						className={({ isActive }) =>
+							`mr-10 ${
+								isActive
+									? 'underline decoration-blue-500 decoration-4 underline-offset-4'
+									: ''
+							}`
+						}
+					>
+						Користувачі
+					</NavLink>
 				)}
 			</nav>
 			<div className=''>

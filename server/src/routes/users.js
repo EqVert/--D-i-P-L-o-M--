@@ -1,11 +1,9 @@
 import express from 'express'
-
-// Импортируем keycloak и kcAdminClient из модуля аутентификации
 import { keycloak, kcAdminClient } from '../auth/keycloak.js'
 
 const router = express.Router()
-// Используем middleware для защиты маршрутов с помощью keycloak
-router.use(keycloak.protect())
+// Защищаем все маршруты, требуя роль ROLE_ADMIN_USER
+router.use(keycloak.protect('realm:ROLE_ADMIN_USER'))
 
 // Обрабатываем POST-запрос на корневой маршрут
 router.post('/', async (req, res) => {
@@ -107,7 +105,7 @@ router.put('/:id', async (req, res) => {
 			}
 		)
 
-		// Обновление ролей польз��вателя
+		// Обновление ролей пользователя
 		if (userData.roles) {
 			try {
 				// Получаем все существующие роли realm
