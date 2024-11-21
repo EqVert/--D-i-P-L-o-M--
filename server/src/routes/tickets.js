@@ -16,7 +16,15 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
 	const userId = req.kauth.grant.access_token.content.sub
-	let results = await Ticket.find({ createdBy: userId })
+	const roles = req.kauth.grant.access_token.content.realm_access.roles
+
+	// Если пользователь админ тикетов - показываем все тикеты, иначе только его
+	let results = []
+	if (roles.includes('ROLE_ADMIN_TICKET')) {
+		results = await Ticket.find()
+	} else {
+		results = await Ticket.find({ createdBy: userId })
+	}
 
 	res.send(results).status(200)
 })

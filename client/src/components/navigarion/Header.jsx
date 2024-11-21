@@ -9,6 +9,8 @@ import { useState } from 'react'
 
 export default function Header() {
 	const roles = authService.getUserInfo('realm_access')?.roles || []
+	const canViewTickets =
+		roles.includes('ROLE_USER') || roles.includes('ROLE_ADMIN_TICKET')
 
 	return (
 		<header className='flex justify-between w-full bg-slate-200 dark:bg-slate-800 fixed top-0 left-0 text-lg/6 h-25 p-1'>
@@ -25,18 +27,20 @@ export default function Header() {
 				>
 					Коти
 				</NavLink>
-				<NavLink
-					to='/tickets'
-					className={({ isActive }) =>
-						`mr-10 ${
-							isActive
-								? 'underline decoration-blue-500 decoration-4 underline-offset-4'
-								: ''
-						}`
-					}
-				>
-					Заявки
-				</NavLink>
+				{canViewTickets && (
+					<NavLink
+						to='/tickets'
+						className={({ isActive }) =>
+							`mr-10 ${
+								isActive
+									? 'underline decoration-blue-500 decoration-4 underline-offset-4'
+									: ''
+							}`
+						}
+					>
+						Заявки
+					</NavLink>
+				)}
 				{roles.includes('ROLE_ADMIN_USER') && (
 					<NavLink
 						to='/users'

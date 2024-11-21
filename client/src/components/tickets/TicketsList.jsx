@@ -7,12 +7,15 @@ import { ticketSelected } from '../../store/tickets/ticketSlice.js'
 import { FaTrash, FaCheck, FaPen } from 'react-icons/fa' // Добавим иконку карандаша
 import { useState } from 'react'
 import TicketEdit from './TicketEdit'
+import { authService } from '../../service/authService.js'
 
 export default function TicketsList({ onEdit }) {
 	const dispatch = useDispatch()
 	const { data } = useFetchTicketsQuery()
 	const [deleteTicket] = useDeleteTicketMutation()
 	const [editingTicket, setEditingTicket] = useState(null)
+	const roles = authService.getUserInfo('realm_access')?.roles || []
+	const isTicketAdmin = roles.includes('ROLE_ADMIN_TICKET')
 
 	const handleDelete = (ticketId) => {
 		deleteTicket(ticketId)
@@ -57,11 +60,15 @@ export default function TicketsList({ onEdit }) {
 
 	return (
 		<div className='overflow-x-auto'>
+			<h2 className='text-xl mb-4'>
+				{isTicketAdmin ? 'Все заявки' : 'Мои заявки'}
+			</h2>
 			<table className='min-w-full bg-white'>
 				<thead>
 					<tr>
 						<th className='border'>ID</th>
 						<th className='border'>Название</th>
+						{isTicketAdmin && <th className='border'>Создатель</th>}
 						<th className='border'>Описание</th>
 						<th className='border'>Статус</th>
 						<th className='border'>Приоритет</th>
@@ -77,6 +84,7 @@ export default function TicketsList({ onEdit }) {
 						<tr key={ticket._id}>
 							<td className='border'>{ticket.number}</td>
 							<td className='border'>{ticket.title}</td>
+							{isTicketAdmin && <td className='border'>{ticket.createdBy}</td>}
 							<td className='border'>{ticket.description}</td>
 							<td className='border'>{ticket.status}</td>
 							<td className='border'>{ticket.priority}</td>
