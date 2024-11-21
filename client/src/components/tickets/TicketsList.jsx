@@ -84,7 +84,11 @@ export default function TicketsList({ onEdit }) {
 						<tr key={ticket._id}>
 							<td className='border'>{ticket.number}</td>
 							<td className='border'>{ticket.title}</td>
-							{isTicketAdmin && <td className='border'>{ticket.createdBy}</td>}
+							{isTicketAdmin && (
+								<td className='border'>
+									{ticket.creatorName.trim() || 'Неизвестно'}
+								</td>
+							)}
 							<td className='border'>{ticket.description}</td>
 							<td className='border'>{ticket.status}</td>
 							<td className='border'>{ticket.priority}</td>

@@ -13,7 +13,7 @@ export default function Header() {
 		roles.includes('ROLE_USER') || roles.includes('ROLE_ADMIN_TICKET')
 
 	return (
-		<header className='flex justify-between w-full bg-slate-200 dark:bg-slate-800 fixed top-0 left-0 text-lg/6 h-25 p-1'>
+		<header className='flex justify-between w-full bg-slate-200 dark:bg-slate-800 fixed top-0 left-0 text-xl h-25 p-1'>
 			<nav className='m-auto'>
 				<NavLink
 					to='/cats'
