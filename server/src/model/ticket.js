@@ -12,6 +12,7 @@ const ticketSchema = new Schema(
 		comment: { type: String, required: false },
 		number: { type: Number, unique: true, required: true, default: 0 },
 		createdBy: { type: String, required: true }, // Добавлено поле createdBy
+		acceptedBy: { type: String, required: true }, // Добавлено поле acceptedBy
 	},
 	{
 		timestamps: true, // Добавляет поля createdAt и updatedAt

@@ -2,9 +2,10 @@ import { useDispatch } from 'react-redux'
 import {
 	useFetchTicketsQuery,
 	useDeleteTicketMutation,
+	useUpdateTicketMutation, // Добавляем хук для обновления
 } from '../../store/tickets/ticketApiSlice.js'
 import { ticketSelected } from '../../store/tickets/ticketSlice.js'
-import { FaTrash, FaCheck, FaPen } from 'react-icons/fa' // Добавим иконку карандаша
+import { FaTrash, FaCheck, FaPen } from 'react-icons/fa'
 import { useState } from 'react'
 import TicketEdit from './TicketEdit'
 import { authService } from '../../service/authService.js'
@@ -13,17 +14,28 @@ export default function TicketsList({ onEdit }) {
 	const dispatch = useDispatch()
 	const { data } = useFetchTicketsQuery()
 	const [deleteTicket] = useDeleteTicketMutation()
+	const [updateTicket] = useUpdateTicketMutation() // Добавляем мутацию для обновления
 	const [editingTicket, setEditingTicket] = useState(null)
 	const roles = authService.getUserInfo('realm_access')?.roles || []
 	const isTicketAdmin = roles.includes('ROLE_ADMIN_TICKET')
+	const currentUser = authService.getUserInfo('name') // Получаем имя текущего пользователя
 
 	const handleDelete = (ticketId) => {
 		deleteTicket(ticketId)
 	}
 
-	// const handleEdit = (ticket) => {
-	// 	setEditingTicket(ticket)
-	// }
+	const handleAcceptTicket = (ticket) => {
+		dispatch(ticketSelected(ticket))
+		// Обновляем задачу с информацией о принявшем
+		updateTicket({
+			id: ticket._id,
+			ticket: {
+				...ticket,
+				acceptedBy: currentUser,
+				status: 'В работе',
+			},
+		})
+	}
 
 	const handleEditClick = (ticket) => {
 		onEdit(ticket)
@@ -76,6 +88,7 @@ export default function TicketsList({ onEdit }) {
 						<th className='border'>Час</th>
 						<th className='border'>Дата начала</th>
 						<th className='border'>Комментарий</th>
+						<th className='border'>Принял</th> {/* Добавляем колонку */}
 						<th className='border'>Действия</th>
 					</tr>
 				</thead>
@@ -104,15 +117,18 @@ export default function TicketsList({ onEdit }) {
 							<td className='border'>{ticket.plannedEffort}</td>
 							<td className='border'>{formatDate(ticket.startDate)}</td>
 							<td className='border'>{ticket.comment}</td>
+							<td className='border'>{ticket.acceptedBy || '-'}</td>
 							<td className='border'>
 								<div className='flex space-x-10 justify-center items-center'>
-									<button
-										onClick={() => dispatch(ticketSelected(ticket))}
-										className='w-7 rounded-full text-green-600 border border-green-600 bg-transparent'
-										title='Выбрать задачу'
-									>
-										<FaCheck className='m-auto' />
-									</button>
+									{!ticket.acceptedBy && ( // Показываем кнопку только если задача не принята
+										<button
+											onClick={() => handleAcceptTicket(ticket)}
+											className='w-7 rounded-full text-green-600 border border-green-600 bg-transparent'
+											title='Принять задачу'
+										>
+											<FaCheck className='m-auto' />
+										</button>
+									)}
 									<button
 										onClick={() => handleEditClick(ticket)}
 										className='w-7 rounded-full text-blue-600 border border-blue-600 bg-transparent'
@@ -127,12 +143,6 @@ export default function TicketsList({ onEdit }) {
 									>
 										<FaTrash className='m-auto' />
 									</button>
-									{/* <button
-										onClick={() => handleEditClick(ticket)}
-										className='btn'
-									>
-										Редактировать
-									</button> */}
 								</div>
 							</td>
 						</tr>

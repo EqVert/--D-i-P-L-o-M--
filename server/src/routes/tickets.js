@@ -64,21 +64,16 @@ router.delete('/:id', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
 	try {
-		const userId = req.kauth.grant.access_token.content.sub
-		const ticket = await Ticket.findOne({
-			_id: req.params.id,
-			createdBy: userId,
-		})
-
-		if (!ticket) {
-			return res.status(404).send({ message: 'Ticket not found' })
-		}
-
+		// Убираем проверку на createdBy
 		const updatedTicket = await Ticket.findByIdAndUpdate(
 			req.params.id,
 			req.body,
 			{ new: true }
 		)
+
+		if (!updatedTicket) {
+			return res.status(404).send({ message: 'Ticket not found' })
+		}
 
 		res.json(updatedTicket)
 	} catch (error) {
