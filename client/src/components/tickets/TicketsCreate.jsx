@@ -93,8 +93,10 @@ export default function TicketsCreate() {
 							required
 							className='w-full p-2 border rounded'
 						>
-							<option value='Открыта'>Відкрита</option>
-							<option value='Закрыта'>Закрыта</option>
+							<option value='Відкрита'>Відкрита</option>
+							<option value='В роботі'>В роботі</option>
+							<option value='Очікує відповіді'>Очікує відповіді</option>
+							<option value='Виконано'>Виконано</option>
 						</select>
 					</div>
 
@@ -106,28 +108,27 @@ export default function TicketsCreate() {
 							required
 							className='w-full p-2 border rounded'
 						>
-							<option value='Низкий'>Нізкий</option>
-							<option value='Средний'>Середній</option>
-							<option value='Высокий'>Високий</option>
+							<option value='Нізкий'>Нізкий</option>
+							<option value='Середній'>Середній</option>
+							<option value='Високий'>Високий</option>
 						</select>
 					</div>
 				</div>
 
 				<div className='grid grid-cols-3 gap-4'>
 					<div>
-						<label className='block mt-5'>Заплановані трудовитраты</label>
+						<label className='block mt-5'>Заплановані трудовитрати</label>
 						<input
 							onChange={(e) => setPlannedEffort(e.target.value)}
 							value={plannedEffort}
 							type='number'
 							placeholder='Трудовитраты'
-							required
 							className='w-full p-2 border rounded'
 						/>
 					</div>
 
 					<div>
-						<label className='block mt-5'>Дата начала</label>
+						<label className='block mt-5'>Дата початку</label>
 						<input
 							onChange={(e) => setStartDate(e.target.value)}
 							value={startDate}
@@ -138,7 +139,7 @@ export default function TicketsCreate() {
 					</div>
 
 					<div>
-						<label className='block mt-5'>Крайний срок</label>
+						<label className='block mt-5'>Дедлайн</label>
 						<input
 							onChange={(e) => setDeadline(e.target.value)}
 							value={deadline}

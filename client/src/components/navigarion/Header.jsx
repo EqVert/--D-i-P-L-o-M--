@@ -55,6 +55,18 @@ export default function Header() {
 						Користувачі
 					</NavLink>
 				)}
+				<NavLink
+					to='/analytics'
+					className={({ isActive }) =>
+						`mr-10 ${
+							isActive
+								? 'underline decoration-blue-500 decoration-4 underline-offset-4'
+								: ''
+						}`
+					}
+				>
+					Аналітика
+				</NavLink>
 			</nav>
 			<div className=''>
 				<KeycloakUserInfo />

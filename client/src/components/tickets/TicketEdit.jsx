@@ -72,13 +72,27 @@ export default function TicketEdit({ ticket, onClose }) {
 						onChange={handleChange}
 						className='w-full p-2 border rounded'
 					>
-						<option value='Открыта'>Открыта</option>
-						<option value='В работе'>В работе</option>
-						<option value='Закрыта'>Закрыта</option>
+						<option value='Відкрита'>Відкрита</option>
+						<option value='В роботі'>В роботі</option>
+						<option value='Очікує відповіді'>Очікує відповіді</option>
+						<option value='Виконано'>Виконано</option>
 					</select>
 				</div>
 
-				<div className='grid grid-cols-2 gap-4'>
+				<div className='grid grid-cols-3 gap-4'>
+					<div>
+						<label className='block text-sm font-medium'>
+							Заплановані трудовитрати
+						</label>
+						<input
+							type='number'
+							name='plannedEffort'
+							value={formData.plannedEffort}
+							onChange={handleChange}
+							className='w-full p-2 border rounded'
+							min='0'
+						/>
+					</div>
 					<div>
 						<label className='block text-sm font-medium'>Дата начала</label>
 						<input

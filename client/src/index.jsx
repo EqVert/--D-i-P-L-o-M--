@@ -7,6 +7,7 @@ import { store } from './store/store.js'
 import UsersList from './components/Users/UsersList'
 import './styles/index.css'
 import { authService } from './service/authService.js'
+import TicketAnalytics from './components/analytics/TicketAnalytics'
 
 const App = lazy(() => import('./App.jsx'))
 const Cats = lazy(() => import('./components/cats/Cats.jsx'))
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
 						<UsersList />
 					</ProtectedRoute>
 				),
+			},
+			{
+				path: 'analytics',
+				element: <TicketAnalytics />,
 			},
 		],
 	},

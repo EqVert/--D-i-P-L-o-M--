@@ -19,6 +19,7 @@ export default function TicketsList({ onEdit }) {
 	const roles = authService.getUserInfo('realm_access')?.roles || []
 	const isTicketAdmin = roles.includes('ROLE_ADMIN_TICKET')
 	const currentUser = authService.getUserInfo('name') // Получаем имя текущего пользователя
+	const [statusFilter, setStatusFilter] = useState('all')
 
 	const handleDelete = (ticketId) => {
 		deleteTicket(ticketId)
@@ -32,7 +33,7 @@ export default function TicketsList({ onEdit }) {
 			ticket: {
 				...ticket,
 				acceptedBy: currentUser,
-				status: 'В работе',
+				status: 'В роботі',
 			},
 		})
 	}
@@ -67,25 +68,77 @@ export default function TicketsList({ onEdit }) {
 	const isPastDeadlineAndOpen = (deadline, status) => {
 		const currentDate = new Date()
 		const deadlineDate = new Date(deadline)
-		return deadlineDate < currentDate && status.toLowerCase() === 'открыта'
+		// Изменяем проверку на статус "Виконано"
+		return deadlineDate < currentDate && status !== 'Виконано'
 	}
+
+	const filteredTickets = data?.filter((ticket) => {
+		if (statusFilter === 'all') return true
+		return ticket.status === statusFilter
+	})
 
 	return (
 		<div className='overflow-x-auto'>
-			<h2 className='text-xl mb-4'>
+			<h2 className='text-xl mb-4 dark:text-slate-200'>
 				{isTicketAdmin ? 'Все заявки' : 'Мои заявки'}
 			</h2>
-			<table className='min-w-full bg-white'>
+
+			<table className='min-w-full bg-white dark:bg-slate-800'>
 				<thead>
 					<tr>
-						<th className='border'>ID</th>
-						<th className='border'>Название</th>
-						{isTicketAdmin && <th className='border'>Создатель</th>}
-						<th className='border'>Описание</th>
-						<th className='border'>Статус</th>
-						<th className='border'>Приоритет</th>
-						<th className='border'>Крайний срок</th>
-						<th className='border'>Час</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							ID
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Название
+						</th>
+						{isTicketAdmin && (
+							<th className='border dark:border-slate-600 dark:text-slate-200'>
+								Создатель
+							</th>
+						)}
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Описание
+						</th>
+						<th className='border dark:border-slate-600'>
+							<select
+								value={statusFilter}
+								onChange={(e) => setStatusFilter(e.target.value)}
+								className='w-full h-full bg-transparent border-none outline-none
+								cursor-pointer font-bold text-center px-0 py-0
+								appearance-none hover:bg-transparent focus:bg-transparent
+								dark:text-slate-200 dark:bg-slate-800'
+								style={{
+									WebkitAppearance: 'none',
+									MozAppearance: 'none',
+								}}
+							>
+								<option value='all' className='dark:bg-slate-700'>
+									Статус ▼
+								</option>
+								{data &&
+									[...new Set(data.map((ticket) => ticket.status))].map(
+										(status) => (
+											<option
+												key={status}
+												value={status}
+												className='dark:bg-slate-700'
+											>
+												{status}
+											</option>
+										)
+									)}
+							</select>
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Приоритет
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Крайний срок
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Час
+						</th>
 						<th className='border'>Дата начала</th>
 						<th className='border'>Комментарий</th>
 						<th className='border'>Принял</th> {/* Добавляем колонку */}
@@ -93,7 +146,7 @@ export default function TicketsList({ onEdit }) {
 					</tr>
 				</thead>
 				<tbody>
-					{data?.map((ticket) => (
+					{filteredTickets?.map((ticket) => (
 						<tr key={ticket._id}>
 							<td className='border'>{ticket.number}</td>
 							<td className='border'>{ticket.title}</td>

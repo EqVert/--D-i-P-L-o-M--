@@ -7,12 +7,12 @@ const ticketSchema = new Schema(
 		status: { type: String, required: true },
 		priority: { type: String, required: true },
 		deadline: { type: Date, required: true },
-		plannedEffort: { type: Number, required: true },
+		plannedEffort: { type: Number, required: false },
 		startDate: { type: Date, required: true },
 		comment: { type: String, required: false },
 		number: { type: Number, unique: true, required: true, default: 0 },
-		createdBy: { type: String, required: true }, // Добавлено поле createdBy
-		acceptedBy: { type: String, required: true }, // Добавлено поле acceptedBy
+		createdBy: { type: String, required: true },
+		acceptedBy: { type: String, required: true },
 	},
 	{
 		timestamps: true, // Добавляет поля createdAt и updatedAt

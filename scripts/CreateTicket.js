@@ -33,9 +33,11 @@ const ticketSchema = new mongoose.Schema(
 		number: { type: Number, unique: true, required: true, default: 0 }, // Добавляем default: 0
 		createdBy: { type: String, required: true },
 		acceptedBy: { type: String, required: false },
+		createdAt: { type: Date, required: true }, // Явно определяем поле
+		updatedAt: { type: Date, required: true }, // Явно определяем поле
 	},
 	{
-		timestamps: true,
+		timestamps: false, // Отключаем автоматическую установку timestamps
 	}
 )
 
@@ -213,7 +215,7 @@ const categories = {
 // Функция для случайного выбора элемента из массива
 const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)]
 
-// Функция для генерации случа��ной даты в диапазоне
+// Функция для генерации случайной даты в диапазоне
 const getRandomDate = (start, end) => {
 	return new Date(
 		start.getTime() + Math.random() * (end.getTime() - start.getTime())
@@ -226,24 +228,69 @@ const getRandomCategory = () => {
 	return categoryKeys[Math.floor(Math.random() * categoryKeys.length)]
 }
 
-// Функция для генерации одной случайной заявки
+// Добавляем вспомогательную функцию для добавления дней к дате
+const addDays = (date, days) => {
+	const result = new Date(date)
+	result.setDate(result.getDate() + days)
+	return result
+}
+
+// Модифицируем функцию для генерации последовательных дат
+const generateSequentialDates = () => {
+	// Изменяем диапазон на последние 3 месяца
+	const endRange = new Date()
+	const startRange = new Date()
+	startRange.setMonth(endRange.getMonth() - 3)
+
+	// Сначала генерируем дату начала
+	const startDate = getRandomDate(startRange, endRange)
+
+	// Дата создания от 1 до 5 дней до начала
+	const minCreationDate = addDays(startDate, -5)
+	const creationDate = getRandomDate(minCreationDate, startDate)
+
+	// Дедлайн от 5 до 14 дней после начала
+	const deadline = getRandomDate(startDate, addDays(startDate, 14))
+
+	return {
+		createdAt: creationDate,
+		startDate: startDate,
+		deadline: deadline,
+	}
+}
+
+// Модифицированная функция создания тикета
 async function createTicket(randomUser) {
 	const category = getRandomCategory()
 	const categoryData = categories[category]
 	const index = Math.floor(Math.random() * categoryData.titles.length)
 
-	const startDate = new Date()
-	const endDate = new Date()
-	endDate.setMonth(endDate.getMonth() + 3)
+	const dates = generateSequentialDates()
+	const status = getRandomElement([
+		'Відкрита',
+		'В роботі',
+		'Очікує відповіді',
+		'Виконано',
+	])
+
+	// Определяем updatedAt в зависимости от статуса
+	let updatedAt = dates.creationDate // По умолчанию равно дате создания
+
+	if (status === 'Виконано') {
+		// Для выполненных - случайная дата между startDate и deadline
+		updatedAt = getRandomDate(dates.startDate, dates.deadline)
+	}
 
 	const ticket = new Ticket({
 		title: categoryData.titles[index],
 		description: categoryData.descriptions[index],
-		status: getRandomElement(['Відкрита', 'В роботі', 'Очікує відповіді']),
-		priority: getRandomElement(['Високий', 'Середній', 'Низький']),
-		deadline: getRandomDate(startDate, endDate),
+		status: status,
+		priority: getRandomElement(['Високий', 'Середній', 'Нізкий']),
+		deadline: dates.deadline,
 		plannedEffort: Math.floor(Math.random() * 40) + 1,
-		startDate: new Date(),
+		startDate: dates.startDate,
+		createdAt: dates.creationDate,
+		updatedAt: updatedAt, // Добавляем поле updatedAt
 		comment: `Категорія: ${category}`,
 		createdBy: randomUser.id,
 		acceptedBy: '',
@@ -256,22 +303,6 @@ async function createTicket(randomUser) {
 async function getNextTicketNumber() {
 	const lastTicket = await Ticket.findOne().sort({ number: -1 })
 	return lastTicket ? lastTicket.number + 1 : 1
-}
-
-// Функция генерации случайной даты в пределах 2024 года
-function getRandomDate2024(isStart = true) {
-	const start = new Date(2024, 0, 1) // 1 января 2024
-	const end = new Date(2024, 11, 31) // 31 декабря 2024
-	const randomDate = new Date(
-		start.getTime() + Math.random() * (end.getTime() - start.getTime())
-	)
-
-	// Если это startDate, то дата должна быть не позже текущей
-	if (isStart) {
-		const now = new Date()
-		return randomDate > now ? now : randomDate
-	}
-	return randomDate
 }
 
 // Модифицированная функция создания заявок
@@ -294,24 +325,31 @@ async function createMultipleTickets(count = 5) {
 				const categoryData = categories[category]
 				const index = Math.floor(Math.random() * categoryData.titles.length)
 
-				// Генерация случайных дат
-				const startDate = getRandomDate2024(true)
-				const deadline = new Date(
-					Math.max(startDate.getTime(), getRandomDate2024(false).getTime())
-				)
+				// Используем только generateSequentialDates
+				const dates = generateSequentialDates()
+				let status = getRandomElement([
+					'Відкрита',
+					'В роботі',
+					'Очікує відповіді',
+					'Виконано',
+				])
+
+				// Определяем updatedAt
+				let updatedAt = dates.createdAt
+				if (status === 'Виконано') {
+					updatedAt = getRandomDate(dates.startDate, dates.deadline)
+				}
 
 				const ticket = new Ticket({
 					title: categoryData.titles[index],
 					description: categoryData.descriptions[index],
-					status: getRandomElement([
-						'Відкрита',
-						'В роботі',
-						'Очікує відповіді',
-					]),
+					status: status,
 					priority: getRandomElement(['Високий', 'Середній', 'Низький']),
-					deadline: deadline,
+					deadline: dates.deadline,
 					plannedEffort: Math.floor(Math.random() * 40) + 1,
-					startDate: startDate,
+					startDate: dates.startDate,
+					createdAt: dates.createdAt,
+					updatedAt: updatedAt,
 					comment: `Категорія: ${category}`,
 					createdBy: randomUser.id,
 					acceptedBy: '',
@@ -323,7 +361,7 @@ async function createMultipleTickets(count = 5) {
 				console.log(
 					`Створено заявку #${
 						savedTicket.number
-					} від ${startDate.toLocaleDateString('uk-UA')}`
+					} від ${savedTicket.createdAt.toLocaleDateString('uk-UA')}`
 				)
 			} catch (error) {
 				console.error(`Помилка при створенні заявки ${i + 1}:`, error.message)
@@ -348,4 +386,4 @@ async function createMultipleTickets(count = 5) {
 }
 
 // Запуск создания заявок
-await createMultipleTickets(10)
+await createMultipleTickets(30)
