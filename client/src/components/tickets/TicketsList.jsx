@@ -104,45 +104,33 @@ export default function TicketsList({ onEdit }) {
 							<select
 								value={statusFilter}
 								onChange={(e) => setStatusFilter(e.target.value)}
-								className='w-full h-full bg-transparent border-none outline-none
-								cursor-pointer font-bold text-center px-0 py-0
-								appearance-none hover:bg-transparent focus:bg-transparent
-								dark:text-slate-200 dark:bg-slate-800'
-								style={{
-									WebkitAppearance: 'none',
-									MozAppearance: 'none',
-								}}
 							>
-								<option value='all' className='dark:bg-slate-700'>
-									Статус ▼
-								</option>
-								{data &&
-									[...new Set(data.map((ticket) => ticket.status))].map(
-										(status) => (
-											<option
-												key={status}
-												value={status}
-												className='dark:bg-slate-700'
-											>
-												{status}
-											</option>
-										)
-									)}
+								<option value='all'>Все</option>
+								<option value='open'>Открытые</option>
+								<option value='closed'>Закрытые</option>
 							</select>
 						</th>
 						<th className='border dark:border-slate-600 dark:text-slate-200'>
 							Приоритет
 						</th>
 						<th className='border dark:border-slate-600 dark:text-slate-200'>
-							Крайний срок
+							Дедлайн
 						</th>
 						<th className='border dark:border-slate-600 dark:text-slate-200'>
-							Час
+							Планируемое время
 						</th>
-						<th className='border'>Дата начала</th>
-						<th className='border'>Комментарий</th>
-						<th className='border'>Принял</th> {/* Добавляем колонку */}
-						<th className='border'>Действия</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Дата начала
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Комментарий
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Принял
+						</th>
+						<th className='border dark:border-slate-600 dark:text-slate-200'>
+							Действия
+						</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -188,13 +176,6 @@ export default function TicketsList({ onEdit }) {
 										title='Редактировать задачу'
 									>
 										<FaPen className='m-auto' />
-									</button>
-									<button
-										onClick={() => handleDelete(ticket._id)}
-										className='w-7 rounded-full text-red-600 border border-red-600 bg-transparent'
-										title='Удалить задачу'
-									>
-										<FaTrash className='m-auto' />
 									</button>
 								</div>
 							</td>
